@@ -1,6 +1,6 @@
 # AWS Profile Switching with Golang
 
-![AWS Profile Switching](link_to_image)
+<!-- ![AWS Profile Switching](link_to_image) -->
 
 ## Table of Contents
 - [Introduction](#introduction)
