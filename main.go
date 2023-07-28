@@ -9,19 +9,20 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-var filePath string = ".aws/credentials"
-
-func loadFile() *ini.File {
+func getFilePath() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Joining the home directory path with the path of the file
-	filePath := filepath.Join(home, filePath)
+	filePath := filepath.Join(home, ".aws/credentials")
+	return filePath
+}
 
+func loadFile() *ini.File {
 	// Load the INI file
-	cfg, err := ini.Load(filePath)
+	cfg, err := ini.Load(getFilePath())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,8 +31,11 @@ func loadFile() *ini.File {
 
 func getProfiles(ini *ini.File) []string {
 	var profiles []string
+
 	for _, section := range ini.Sections() {
-		if section.Name() != "DEFAULT" && (section.Name() != "default" || section.Key("created_by_go").String() != "true") {
+		if section.Name() == "default" && section.Key("created_by_go").String() == "" {
+			panic("Please change default profile to something else")
+		} else if section.Name() != "DEFAULT" && (section.Name() != "default" && section.Key("created_by_go").String() != "true") {
 			profiles = append(profiles, section.Name())
 		}
 	}
@@ -54,6 +58,7 @@ func chooseProfile(profiles []string) string {
 }
 
 func updateDefaultProfile(ini *ini.File, profile string) {
+	// fmt.Println(profile)
 	section := ini.Section(profile)
 
 	// Get the access key ID and secret access key for the selected profile
@@ -69,8 +74,9 @@ func updateDefaultProfile(ini *ini.File, profile string) {
 	if region != "" {
 		defaultSection.Key("region").SetValue(region)
 	}
+
 	// Save the INI file
-	ini.SaveTo(filePath)
+	ini.SaveTo(getFilePath())
 }
 
 func main() {
