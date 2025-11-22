@@ -29,6 +29,7 @@ To get the latest release of the AWS Profile Switching tool, follow these steps:
    sudo mv /path/to/downloaded/aws-profile-switcher /usr/local/sbin/pfsw
    rm -f aws-profile-switcher_1.0.3_darwin_amd64.tar.gz
    pfsw
+   ```
 
 ## Contributing
 
